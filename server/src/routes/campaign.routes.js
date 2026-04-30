@@ -25,4 +25,33 @@ router.post('/:id/comments', protect, commentCtrl.addComment);
 router.delete('/:id/comments/:commentId', protect, commentCtrl.deleteComment);
 router.post('/:id/comments/:commentId/like', protect, commentCtrl.likeComment);
 
+
+// ✅ ADD HERE (before export)
+router.get('/stats', async (req, res) => {
+    const Campaign = require('../models/Campaign');
+
+    const totalCampaigns = await Campaign.countDocuments();
+
+    const totalRaisedData = await Campaign.aggregate([
+        {
+            $group: {
+                _id: null,
+                total: { $sum: '$currentAmount' }
+            }
+        }
+    ]);
+
+    const totalRaised = totalRaisedData[0]?.total || 0;
+
+    res.json({
+        success: true,
+        stats: {
+            campaigns: totalCampaigns,
+            raised: totalRaised,
+            backers: totalCampaigns * 5
+        }
+    });
+});
+
+
 module.exports = router;
