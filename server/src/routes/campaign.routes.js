@@ -34,7 +34,7 @@ router.get('/stats', async (req, res) => {
 
 // Existing routes
 router.get('/', optionalAuth, campaign.getCampaigns);
-router.get('/:slug', optionalAuth, campaign.getCampaignBySlug);
+router.get('/slug/:slug', optionalAuth, campaign.getCampaignBySlug);
 
 router.post('/', protect, authorize('creator', 'admin'), campaign.createCampaign);
 router.put('/:id', protect, campaign.updateCampaign);
