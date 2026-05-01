@@ -3,38 +3,8 @@ const router = express.Router();
 const campaign = require('../controllers/campaign.controller');
 const { protect, authorize, optionalAuth } = require('../middleware/auth.middleware');
 
-
-// ✅ FIX: Put /stats FIRST (before /:slug)
-router.get('/stats', async (req, res) => {
-    const Campaign = require('../models/Campaign');
-
-    const totalCampaigns = await Campaign.countDocuments();
-
-    const totalRaisedData = await Campaign.aggregate([
-        {
-            $group: {
-                _id: null,
-                total: { $sum: '$currentAmount' }
-            }
-        }
-    ]);
-
-    const totalRaised = totalRaisedData[0]?.total || 0;
-
-    res.json({
-        success: true,
-        stats: {
-            campaigns: totalCampaigns,
-            raised: totalRaised,
-            backers: totalCampaigns * 5
-        }
-    });
-});
-
-
-// Existing routes
 router.get('/', optionalAuth, campaign.getCampaigns);
-router.get('/slug/:slug', optionalAuth, campaign.getCampaignBySlug);
+router.get('/:slug', optionalAuth, campaign.getCampaignBySlug);
 
 router.post('/', protect, authorize('creator', 'admin'), campaign.createCampaign);
 router.put('/:id', protect, campaign.updateCampaign);
