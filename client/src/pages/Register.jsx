@@ -15,6 +15,10 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (form.password.length < 8) { toast.error('Password must be at least 8 characters'); return; }
+    if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(form.password)) {
+      toast.error('Password must include uppercase, lowercase, and number');
+      return;
+    }
     const result = await register(form.name, form.email, form.password, form.role);
     if (result.success) {
       toast.success(`Welcome to IgnitionX, ${form.name}! 🔥`);
