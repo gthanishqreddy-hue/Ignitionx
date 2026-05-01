@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { motion } from "framer-motion";
 import CampaignCard from "../components/CampaignCard";
 import { FiZap, FiShield, FiTrendingUp, FiAward } from "react-icons/fi";
 
@@ -88,7 +89,12 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#0b0f19] text-white pb-24 font-sans selection:bg-purple-500/30">
-      <div className="max-w-6xl mx-auto px-4 pt-24">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="max-w-6xl mx-auto px-4 pt-24"
+      >
         
         {/* SECTION 1: HERO */}
         <div className="grid md:grid-cols-2 gap-12 items-center mb-24">
@@ -112,10 +118,10 @@ export default function Home() {
             </p>
             
             <div className="flex flex-wrap items-center gap-4">
-              <Link to="/campaigns/create" className="px-6 py-3.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-medium transition duration-300 shadow-[0_0_20px_rgba(124,58,237,0.3)]">
+              <Link to="/campaigns/create" className="px-6 py-3.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-medium transition-all duration-300 shadow-[0_0_20px_rgba(124,58,237,0.3)] hover:translate-y-[-2px] hover:shadow-lg active:scale-[0.98]">
                 Start a Campaign
               </Link>
-              <Link to="/discover" className="px-6 py-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white font-medium transition duration-300">
+              <Link to="/discover" className="px-6 py-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white font-medium transition-all duration-300 hover:translate-y-[-2px] hover:shadow-lg active:scale-[0.98]">
                 Explore Campaigns
               </Link>
             </div>
@@ -220,15 +226,20 @@ export default function Home() {
           </div>
 
           {displayCampaigns.length === 0 ? (
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-16 text-center backdrop-blur-md">
-              <div className="text-4xl mb-4">🚀</div>
-              <h3 className="text-lg font-medium text-white mb-2">No campaigns yet</h3>
-              <p className="text-sm text-gray-400">Be the first to launch a campaign on IgnitionX.</p>
+            <div className="text-center py-16 text-gray-400">
+              🚀 No campaigns yet — be the first to launch!
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {displayCampaigns.map((c) => (
-                <CampaignCard key={c._id} campaign={c} />
+              {displayCampaigns.map((c, i) => (
+                <motion.div
+                  key={c._id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.1 }}
+                >
+                  <CampaignCard campaign={c} />
+                </motion.div>
               ))}
             </div>
           )}
@@ -279,7 +290,7 @@ export default function Home() {
           
         </div>
 
-      </div>
+      </motion.div>
     </div>
   );
 }

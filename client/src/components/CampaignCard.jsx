@@ -5,11 +5,11 @@ export default function CampaignCard({ campaign }) {
   const progress = Math.min((currentAmount / goalAmount) * 100, 100);
 
   return (
-    <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:scale-[1.02] transition duration-300 flex flex-col hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] backdrop-blur-md group h-full">
+    <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden flex flex-col backdrop-blur-md h-full group transition-all duration-300 hover:scale-[1.02] hover:border-white/20 hover:shadow-xl">
       {/* Image */}
       <div className="relative h-48 bg-white/5">
         {coverImage?.url ? (
-          <img src={coverImage.url} alt={title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+          <img src={coverImage.url} alt={title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-white/5 to-white/10 flex items-center justify-center">
             <span className="text-white/30 font-bold">No Image</span>
@@ -38,7 +38,7 @@ export default function CampaignCard({ campaign }) {
           </div>
           <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
             <div 
-              className="h-full bg-white/80 rounded-full transition-all duration-1000 ease-out"
+              className="h-full bg-white/80 rounded-full transition-all duration-700 ease-out"
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -47,7 +47,7 @@ export default function CampaignCard({ campaign }) {
         {/* Button */}
         <Link 
           to={`/campaigns/${slug}`}
-          className="w-full block text-center py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-sm font-semibold text-white transition-all duration-300"
+          className="w-full block text-center py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-sm font-semibold text-white transition-all duration-300 hover:opacity-90 hover:scale-[1.02] active:scale-[0.98]"
         >
           View Campaign
         </Link>
