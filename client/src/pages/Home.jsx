@@ -1,43 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { Helmet } from 'react-helmet-async';
-import { FiArrowRight, FiZap } from 'react-icons/fi';
-import { useInView } from 'framer-motion';
-import CampaignCard from '../components/campaign/CampaignCard';
-import api from '../lib/api';
-
-// Animated counter
-function Counter({ target, suffix = '', prefix = '' }) {
-  const [count, setCount] = useState(0);
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true });
-
-  useEffect(() => {
-    if (!inView) return;
-    const step = target / 60 || 1;
-    let current = 0;
-
-    const timer = setInterval(() => {
-      current = Math.min(current + step, target);
-      setCount(Math.floor(current));
-      if (current >= target) clearInterval(timer);
-    }, 16);
-
-    return () => clearInterval(timer);
-  }, [inView, target]);
-
-  return <span ref={ref}>{prefix}{count.toLocaleString()}{suffix}</span>;
-}
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function Home() {
-  const { scrollY } = useScroll();
-  const heroY = useTransform(scrollY, [0, 600], [0, -150]);
-  const heroOpacity = useTransform(scrollY, [0, 400], [1, 0]);
-
-  const [campaigns, setCampaigns] = useState([]);
-
-  // ✅ NEW: stats state
   const [stats, setStats] = useState({
     campaigns: 0,
     raised: 0,
@@ -45,89 +9,71 @@ export default function Home() {
   });
 
   useEffect(() => {
-    // existing campaigns fetch
-    api.get('/campaigns?sort=trending&limit=6&status=active')
-      .then(({ data }) => setCampaigns(data.campaigns || []))
-      .catch(() => { });
+    const fetchStats = async () => {
+      try {
+        const res = await axios.get(
+          `${import.meta.env.VITE_API_URL}/api/campaigns/stats`
+        );
+        setStats(res.data.stats);
+      } catch (err) {
+        console.error(err);
+      }
+    };
 
-    // ✅ NEW: fetch real stats
-    api.get('/campaigns/stats')
-      .then(({ data }) => setStats(data.stats))
-      .catch(() => { });
-
+    fetchStats();
   }, []);
 
   return (
-    <>
-      <Helmet>
-        <title>IgnitionX</title>
-      </Helmet>
+    <div className="min-h-screen bg-[#0b0f19] text-white px-6">
 
       {/* HERO */}
-      <section className="text-center py-20">
+      <div className="max-w-6xl mx-auto pt-20 text-center">
+        <h1 className="text-6xl font-bold tracking-tight leading-tight">
+          Ignite Ideas. <br />
+          <span className="text-purple-500">Accelerate Dreams.</span>
+        </h1>
 
-        <motion.div style={{ y: heroY, opacity: heroOpacity }}>
+        <p className="text-gray-400 mt-6 max-w-2xl mx-auto">
+          The next-generation crowdfunding platform where bold ideas meet
+          the community that believes in them.
+        </p>
 
-          <h1 className="text-5xl font-bold mb-6">
-            Ignite Ideas 🚀
-          </h1>
-
-          {/* ✅ REAL STATS (UPDATED) */}
-          <div className="grid grid-cols-3 gap-6 mt-10 max-w-lg mx-auto">
-
-            <div>
-              <div className="text-2xl font-bold text-purple-500">
-                <Counter target={stats.campaigns} suffix="+" />
-              </div>
-              <p className="text-sm text-gray-400">Campaigns</p>
-            </div>
-
-            <div>
-              <div className="text-2xl font-bold text-purple-500">
-                <Counter target={stats.raised} prefix="$" />
-              </div>
-              <p className="text-sm text-gray-400">Total Raised</p>
-            </div>
-
-            <div>
-              <div className="text-2xl font-bold text-purple-500">
-                <Counter target={stats.backers} suffix="+" />
-              </div>
-              <p className="text-sm text-gray-400">Backers</p>
-            </div>
-
-          </div>
-
-        </motion.div>
-      </section>
-
-      {/* CAMPAIGNS */}
-      <section className="py-16 px-4 max-w-6xl mx-auto">
-
-        {campaigns.length > 0 ? (
-          <div className="grid md:grid-cols-3 gap-6">
-            {campaigns.map((c, i) => (
-              <CampaignCard key={c._id} campaign={c} index={i} />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-20">
-            <FiZap className="text-4xl mx-auto mb-4 text-purple-500" />
-            <p>No campaigns yet</p>
-          </div>
-        )}
-
-      </section>
-
-      {/* CTA */}
-      <div className="text-center py-10">
-        <Link to="/discover">
-          <button className="btn-primary px-6 py-3 flex items-center gap-2 mx-auto">
-            Explore Campaigns <FiArrowRight />
+        <div className="mt-8 flex justify-center gap-4">
+          <button className="bg-purple-600 px-6 py-3 rounded-xl font-semibold hover:opacity-90 transition">
+            Explore Campaigns
           </button>
-        </Link>
+
+          <button className="border border-white/20 px-6 py-3 rounded-xl hover:bg-white/10 transition">
+            Start a Campaign
+          </button>
+        </div>
       </div>
 
-    </>
+      {/* STATS */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-20 max-w-4xl mx-auto">
+
+        <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-6 text-center">
+          <h2 className="text-3xl font-semibold">{stats.campaigns}+</h2>
+          <p className="text-gray-400 mt-2">Campaigns</p>
+        </div>
+
+        <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-6 text-center">
+          <h2 className="text-3xl font-semibold">${stats.raised}</h2>
+          <p className="text-gray-400 mt-2">Total Raised</p>
+        </div>
+
+        <div className="bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl p-6 text-center">
+          <h2 className="text-3xl font-semibold">{stats.backers}+</h2>
+          <p className="text-gray-400 mt-2">Backers</p>
+        </div>
+
+      </div>
+
+      {/* TRUST LINE */}
+      <div className="text-center mt-10 text-gray-500 text-sm">
+        Trusted by creators worldwide • Secure payments powered by Stripe
+      </div>
+
+    </div>
   );
 }
