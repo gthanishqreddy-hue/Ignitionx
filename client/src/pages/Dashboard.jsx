@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import api from '../lib/api';
 import useAuthStore from '../store/authStore';
 import Sidebar from '../components/dashboard/Sidebar';
 import Topbar from '../components/dashboard/Topbar';
 import StatCard from '../components/dashboard/StatCard';
+import RevenueChart from '../components/dashboard/RevenueChart';
+import CategoryChart from '../components/dashboard/CategoryChart';
 
 export default function Dashboard() {
   const { user } = useAuthStore();
@@ -46,16 +49,31 @@ export default function Dashboard() {
         <Topbar user={user} />
         
         <main className="flex-1 p-8">
-          <div className="max-w-6xl mx-auto">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="max-w-6xl mx-auto"
+          >
             {/* Stats Section */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
               <StatCard title="Total Campaigns" value={report.totalCampaigns} />
               <StatCard title="Total Raised" value={`$${report.totalRaised.toLocaleString()}`} />
               <StatCard title="Backers" value={report.totalBackers.toLocaleString()} />
             </div>
 
+            {/* Charts Section */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+              <div className="lg:col-span-2">
+                <RevenueChart />
+              </div>
+              <div className="lg:col-span-1">
+                <CategoryChart />
+              </div>
+            </div>
+
             {/* Campaigns Table */}
-            <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden backdrop-blur-sm">
+            <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden backdrop-blur-sm hover:shadow-xl transition-all duration-300">
               <div className="p-6 border-b border-white/10 flex justify-between items-center bg-black/20">
                 <h2 className="text-lg font-semibold">Your Campaigns</h2>
                 <Link 
@@ -113,7 +131,7 @@ export default function Dashboard() {
                 </table>
               </div>
             </div>
-          </div>
+          </motion.div>
         </main>
       </div>
     </div>
