@@ -41,6 +41,51 @@ export default function Home() {
     fetchCampaigns();
   }, []);
 
+  const demoCampaigns = [
+    {
+      _id: "1",
+      title: "NeuroLink Pro",
+      description: "Next-gen brain-computer interface",
+      category: "Technology",
+      currentAmount: 125430,
+      goalAmount: 150000,
+      image: "https://images.unsplash.com/photo-1518779578993-ec3579fee39f",
+      slug: "neurolink-pro"
+    },
+    {
+      _id: "2",
+      title: "Eclipse: Beyond Earth",
+      description: "A sci-fi adventure series",
+      category: "Film",
+      currentAmount: 98760,
+      goalAmount: 130000,
+      image: "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa",
+      slug: "eclipse-beyond-earth"
+    },
+    {
+      _id: "3",
+      title: "Minimalist Chair Collection",
+      description: "Sustainable furniture for the future",
+      category: "Design",
+      currentAmount: 68120,
+      goalAmount: 100000,
+      image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7",
+      slug: "minimalist-chair"
+    },
+    {
+      _id: "4",
+      title: "Echoes of Tomorrow",
+      description: "Debut album by Indie Waves",
+      category: "Music",
+      currentAmount: 54320,
+      goalAmount: 75000,
+      image: "https://images.unsplash.com/photo-1511379938547-c1f69419868d",
+      slug: "echoes-of-tomorrow"
+    }
+  ];
+
+  const displayCampaigns = campaigns.length > 0 ? campaigns : demoCampaigns;
+
   return (
     <div className="min-h-screen bg-[#0b0f19] text-white pb-24 font-sans selection:bg-purple-500/30">
       <div className="max-w-6xl mx-auto px-4 pt-24">
@@ -174,7 +219,7 @@ export default function Home() {
             </Link>
           </div>
 
-          {campaigns.length === 0 ? (
+          {displayCampaigns.length === 0 ? (
             <div className="bg-white/5 border border-white/10 rounded-2xl p-16 text-center backdrop-blur-md">
               <div className="text-4xl mb-4">🚀</div>
               <h3 className="text-lg font-medium text-white mb-2">No campaigns yet</h3>
@@ -182,8 +227,8 @@ export default function Home() {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {campaigns.map((campaign) => (
-                <CampaignCard key={campaign._id} campaign={campaign} />
+              {displayCampaigns.map((c) => (
+                <CampaignCard key={c._id} campaign={c} />
               ))}
             </div>
           )}
